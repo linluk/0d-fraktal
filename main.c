@@ -92,11 +92,12 @@ int main(int argc, char **argv) {
   unsigned long max_iter = 127;
   long double re = 0.0, im = 0.0;
   long double bailout = 2.0;
+  long double zoom = 1.0;
   int thread_count = 2;
   char *filename = NULL;
   int c;
   opterr = 0; // I want to provide my own help/error text. have to handle '?'.
-  while ((c = getopt(argc, argv, "d:i:c:b:t:o:h")) != -1) {
+  while ((c = getopt(argc, argv, "d:i:c:b:z:t:o:h")) != -1) {
    switch (c) {
      case 'd': // dimension
        if (2 != sscanf(optarg," %llu x %llu ", &width, &height)) {
@@ -119,6 +120,12 @@ int main(int argc, char **argv) {
      case 'b': // bailout
        if (1 != sscanf(optarg, " %La ", &bailout)) {
          fprintf(stderr, "Argument for -b must be a number, not \"%s\".\n", optarg);
+         return 1;
+       }
+       break;
+     case 'z': // zoom
+       if (1 != sscanf(optarg, " %La ", &zoom)) {
+         fprintf(stderr, "Argument for -z must be a number, not \"%s\".\n", optarg);
          return 1;
        }
        break;
@@ -159,7 +166,7 @@ int main(int argc, char **argv) {
   cd.width = width;
   cd.pxmax = width * height;
   cd.imax = max_iter;
-  cd.delta = 4.0 / width;
+  cd.delta = 4.0 / (width * zoom);
   cd.origin = (re - cd.delta * (width / 2.0)) + (im + cd.delta * (height / 2.0)) * I;
   cd.bailout = bailout;
   //cd.origin = -2.0 + 2.0 * I;
