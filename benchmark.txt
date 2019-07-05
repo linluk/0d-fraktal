@@ -1,0 +1,7 @@
+Benchmark Fr Jul 5 15:09:48 CEST 2019 - a7fe3e7
+$ 0d-fraktal -o benchmark.ppm -d 1920x1920 -c 0+0i -b 2 -i 1024 -t 4
+
+real	0m5,324s
+user	0m12,254s
+sys	0m0,080s
+
