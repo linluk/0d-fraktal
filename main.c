@@ -32,6 +32,16 @@ struct rgb {
 atomic_ullong g_current_pixel = 0;
 struct rgb *g_pixels;
 
+#define MODULO_COLOR_COUNT (6)
+struct rgb g_modulo_colors[MODULO_COLOR_COUNT] = {
+  {   0,   0, 255 },
+  {   0, 255,   0 },
+  {   0, 255, 255 },
+  { 255,   0,   0 },
+  { 255,   0, 255 },
+  { 255, 255,   0 }
+};
+
 
 int mandelbrot_thread(void *calc_data) {
   struct calc_data *cd = calc_data;
@@ -42,6 +52,7 @@ int mandelbrot_thread(void *calc_data) {
   long double origin_i = cimagl(cd->origin);
   long double delta = cd->delta;
   long double bailout = cd->bailout * cd->bailout;
+  struct rgb *rgb;
 
   unsigned long long pixel;
   unsigned long x;
@@ -59,14 +70,15 @@ int mandelbrot_thread(void *calc_data) {
       i++;
     }
     //printf("pixel: %lld (%ld, %ld) C: %.3Lf + %.3Lf i   iterations: %ld\n", pixel, x, y, creall(c), cimagl(c), i);
-    if (i % 2 == 0) {
+    if (i >= imax) {
       g_pixels[pixel].r = 0;
       g_pixels[pixel].g = 0;
       g_pixels[pixel].b = 0;
     } else {
-      g_pixels[pixel].r = 255;
-      g_pixels[pixel].g = 255;
-      g_pixels[pixel].b = 255;
+      rgb = &g_modulo_colors[i % MODULO_COLOR_COUNT];
+      g_pixels[pixel].r = rgb->r;
+      g_pixels[pixel].g = rgb->g;
+      g_pixels[pixel].b = rgb->b;
     }
   };
   return 0;
